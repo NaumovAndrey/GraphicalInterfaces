@@ -6,14 +6,16 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.LocalDateTime;
 
 
 public class ServerWindow extends JFrame {
     private static final int WIDTH = 600;
     private static final int HEIGHT = 550;
 
-    JButton btnStop;
+    JButton btnExit;
     JToggleButton btnStart;
+    JTextArea textArea;
 
     public ServerWindow() throws HeadlessException{
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //остановитть при закрытии
@@ -34,21 +36,27 @@ public class ServerWindow extends JFrame {
             }
         });
 
-        btnStop = new JButton("Выход");
+        btnExit = new JButton("Выход");
 
-        JTextArea textArea = new JTextArea(); //мнгострочное текстовое поле
+        textArea = new JTextArea(); //мнгострочное текстовое поле
 
         btnStart.addActionListener(new ActionListener() { //добавить слушателя действия
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                LocalDateTime currentDateTime = LocalDateTime.now();
+                String message = currentDateTime.toString();
+                if(btnStart.isSelected()){
+                    textArea.append("["+ message + "]" + " Сервер включен" + "\n" );
+                } else {
+                    textArea.append("["+ message + "]" + " Сервер выключен" + "\n");
+                }
             }
         });
 
-        btnStop.addActionListener(new ActionListener() {
+        btnExit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                System.exit(0);
             }
         });
 
@@ -57,7 +65,7 @@ public class ServerWindow extends JFrame {
 
         JPanel panBotton = new JPanel(new GridLayout(1, 2));
         panBotton.add(btnStart);
-        panBotton.add(btnStop);
+        panBotton.add(btnExit);
         add(panBotton, BorderLayout.SOUTH);
 
         setVisible(true);
