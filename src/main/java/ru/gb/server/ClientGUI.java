@@ -5,6 +5,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
+import java.time.LocalDateTime;
 
 public class ClientGUI extends JFrame {
     private static final int WIDTH = 600;
@@ -22,27 +23,11 @@ public class ClientGUI extends JFrame {
         setResizable(false); //не изменяемое окно
 
         btnLogin = new JToggleButton("Подключить");
-        btnLogin.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                if (btnLogin.isSelected()) {
-                    btnLogin.setText("Отключить");
-                } else {
-                    btnLogin.setText("Подключить");
-                }
-            }
-        });
-
         btnToSend = new JButton("Отправить");
 
         logTextArea = new JTextArea();
         logTextArea.setEditable(false);
-        btnLogin.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
 
-            }
-        });
 
 
         add(createALoginPanel(), BorderLayout.NORTH);
@@ -151,6 +136,35 @@ public class ClientGUI extends JFrame {
         JTextField loginText = new JTextField();
         JPasswordField passwordText = new JPasswordField();
         passwordText.setEchoChar('*');
+
+        btnLogin.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                if (btnLogin.isSelected()) {
+                    btnLogin.setText("Отключить");
+                } else {
+                    btnLogin.setText("Подключить");
+                }
+            }
+        });
+
+        btnToSend.setEnabled(false);
+        btnLogin.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                boolean selected = btnLogin.isSelected();
+                btnToSend.setEnabled(selected);
+
+                LocalDateTime currentDateTime = LocalDateTime.now();
+                String message = currentDateTime.toString();
+                if(btnLogin.isSelected()){
+                    logTextArea.append("["+ message + "]" + " Соединение установлено" + "\n");
+                } else {
+                    logTextArea.append("["+ message + "]" + " Соединение разорвано" + "\n");
+                }
+
+            }
+        });
 
         panel.add(loginText);
         panel.add(passwordText);
