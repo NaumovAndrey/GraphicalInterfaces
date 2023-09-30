@@ -12,13 +12,14 @@ public class ClientGUI extends JFrame {
 
     JButton btnToSend;
     JToggleButton btnLogin;
+    JTextArea logTextArea;
 
     public ClientGUI() throws HeadlessException {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //остановитть при закрытии
         setSize(WIDTH, HEIGHT);
         setLocationRelativeTo(null); //отцентровать
         setTitle("Клиент"); //заголовок
-        //setResizable(false); //не изменяемое окно
+        setResizable(false); //не изменяемое окно
 
         btnLogin = new JToggleButton("Подключить");
         btnLogin.addChangeListener(new ChangeListener() {
@@ -34,7 +35,7 @@ public class ClientGUI extends JFrame {
 
         btnToSend = new JButton("Отправить");
 
-        JTextArea logTextArea = new JTextArea();
+        logTextArea = new JTextArea();
         logTextArea.setEditable(false);
         btnLogin.addActionListener(new ActionListener() {
             @Override
@@ -59,6 +60,15 @@ public class ClientGUI extends JFrame {
         JScrollPane jScrollPane = new JScrollPane(textArea); //скролинг
 //        jScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
 
+        btnToSend.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String message = textArea.getText();
+                logTextArea.append(message + "\n");
+                textArea.setText("");
+            }
+        });
+
         entryPanel.add(jScrollPane, BorderLayout.CENTER);
         entryPanel.add(btnToSend, BorderLayout.EAST);
 
@@ -77,17 +87,6 @@ public class ClientGUI extends JFrame {
                 if (textArea.getText().isEmpty()) {
                     textArea.setText("Введите cсообщение");
                 }
-            }
-        });
-
-        btnToSend.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String message = textArea.getText();
-                //здесь хочу обратиться к  logTextArea (который инициализирован на 23 строке)  и присвоить, что то вроде этого:
-                //logTextArea.append(message + "\n");
-                textArea.setText("");
-                //по мимо этого как мне взаимодействовать с кнопкой подключить/отключить, т.е делать активным или не активным кнопку отправить
             }
         });
 
