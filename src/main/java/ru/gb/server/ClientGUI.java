@@ -1,6 +1,8 @@
 package ru.gb.server;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -8,7 +10,8 @@ public class ClientGUI extends JFrame {
     private static final int WIDTH = 600;
     private static final int HEIGHT = 550;
 
-    JButton btnLogin, btnToSend;
+    JButton btnToSend;
+    JToggleButton btnLogin;
 
     public ClientGUI() throws HeadlessException {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //остановитть при закрытии
@@ -17,7 +20,18 @@ public class ClientGUI extends JFrame {
         setTitle("Клиент"); //заголовок
         //setResizable(false); //не изменяемое окно
 
-        btnLogin = new JButton("Логин");
+        btnLogin = new JToggleButton("Подключить");
+        btnLogin.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                if (btnLogin.isSelected()) {
+                    btnLogin.setText("Отключить");
+                } else {
+                    btnLogin.setText("Подключить");
+                }
+            }
+        });
+
         btnToSend = new JButton("Отправить");
 
         JTextArea logTextArea = new JTextArea();
@@ -30,7 +44,6 @@ public class ClientGUI extends JFrame {
         });
 
 
-
         add(createALoginPanel(), BorderLayout.NORTH);
         add(logTextArea);
         add(sendingMessages(), BorderLayout.SOUTH);
@@ -39,7 +52,7 @@ public class ClientGUI extends JFrame {
     }
 
     private Component sendingMessages() {
-        JPanel entryPanel = new JPanel(new GridLayout(0,2));
+        JPanel entryPanel = new JPanel(new GridLayout(0, 2));
         JTextArea textArea = new JTextArea();
 //        textArea.setLineWrap(true); //перенос строк
 //        textArea.setWrapStyleWord(true); //перенос слов
@@ -72,7 +85,7 @@ public class ClientGUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String message = textArea.getText();
                 //здесь хочу обратиться к  logTextArea (который инициализирован на 23 строке)  и присвоить, что то вроде этого:
-                logTextArea.append(message + "\n");
+                //logTextArea.append(message + "\n");
                 textArea.setText("");
 
             }
@@ -81,8 +94,8 @@ public class ClientGUI extends JFrame {
         return entryPanel;
     }
 
-    private Component createALoginPanel(){
-        JPanel entryPanel = new JPanel(new GridLayout(2,1));
+    private Component createALoginPanel() {
+        JPanel entryPanel = new JPanel(new GridLayout(2, 1));
         entryPanel.add(createIpPanel());
         entryPanel.add(createLoginPanel());
 
@@ -90,7 +103,7 @@ public class ClientGUI extends JFrame {
     }
 
     private Component createIpPanel() {
-        JPanel panel = new JPanel(new GridLayout(1,2));
+        JPanel panel = new JPanel(new GridLayout(1, 2));
         JTextField ipText = new JTextField();
         JTextField portText = new JTextField();
         panel.add(ipText);
@@ -117,9 +130,9 @@ public class ClientGUI extends JFrame {
         portText.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
-               if(portText.getText().equals("Введите PORT сервера")){
-                   portText.setText("8080");
-               }
+                if (portText.getText().equals("Введите PORT сервера")) {
+                    portText.setText("8080");
+                }
             }
 
             @Override
@@ -134,7 +147,7 @@ public class ClientGUI extends JFrame {
     }
 
     private Component createLoginPanel() {
-        JPanel panel = new JPanel(new GridLayout(1,3));
+        JPanel panel = new JPanel(new GridLayout(1, 3));
 
         JTextField loginText = new JTextField();
         JPasswordField passwordText = new JPasswordField();
@@ -148,7 +161,7 @@ public class ClientGUI extends JFrame {
         loginText.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
-                if(loginText.getText().equals("Введите логин")){
+                if (loginText.getText().equals("Введите логин")) {
                     loginText.setText("Admin");
                 }
             }
