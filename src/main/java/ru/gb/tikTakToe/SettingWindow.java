@@ -1,4 +1,6 @@
-package ru.gb;
+package ru.gb.tikTakToe;
+
+import ru.gb.tikTakToe.GameWindow;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -8,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class SettingWindow extends JFrame {
+    //region Константы
     public static final String BTN_START = "Start new game";
     public static final String LABEL_CHOICE_MODE = "Выберите режим игры";
     public static final String BTN_HUMAN_VERSUS_AI = "Человек против компьютера";
@@ -24,6 +27,7 @@ public class SettingWindow extends JFrame {
 
     private static final int WIDTH = 230;
     private static final int HEIGHT = 350;
+    //endregion
 
     GameWindow gameWindow;
     JButton btnStart;
@@ -34,10 +38,14 @@ public class SettingWindow extends JFrame {
     SettingWindow(GameWindow gameWindow){
         this.gameWindow = gameWindow;
 
+        /*
+         *Отцентровка второво окна поцентру первого
+         */
         int centerGameWindowX = gameWindow.getX() + gameWindow.getWidth()/2;
         int centerGameWindowY = gameWindow.getY() + gameWindow.getHeight()/2;
         setLocation(centerGameWindowX - WIDTH/2, centerGameWindowY - HEIGHT/2);
-        setSize(WIDTH, HEIGHT);
+
+        setSize(WIDTH, HEIGHT); //вывод на экран
 
         add(createMainPanel());
         add(createButtonStart(), BorderLayout.SOUTH);
@@ -86,7 +94,7 @@ public class SettingWindow extends JFrame {
         humanVHuman = new JRadioButton(BTN_HUMAN_VERSUS_HUMAN);
         buttonGroup.add(humanVAI);
         buttonGroup.add(humanVHuman);
-        humanVAI.setSelected(true);
+        humanVAI.setSelected(true); //Установить начально выбранную опцию
 
         panel.add(title);
         panel.add(humanVAI);

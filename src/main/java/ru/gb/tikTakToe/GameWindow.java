@@ -1,4 +1,4 @@
-package ru.gb;
+package ru.gb.tikTakToe;
 
 import javax.swing.*;
 import java.awt.*;
