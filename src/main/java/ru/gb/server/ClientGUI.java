@@ -38,7 +38,7 @@ public class ClientGUI extends JFrame {
         logTextArea.setEditable(false);
 
 
-        ServerWindow serverWindow;
+
 
         add(createALoginPanel(), BorderLayout.NORTH);
         add(logTextArea);
@@ -62,6 +62,16 @@ public class ClientGUI extends JFrame {
                 String message = textArea.getText();
                 logTextArea.append(message + "\n");
                 textArea.setText("");
+
+                try {
+                    OutputStream toSend = socket.getOutputStream();
+                    toSend.write(message.getBytes());
+                    toSend.flush();
+
+                    socket.close();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
 
 //                intermediate = new IntermediateClass(message);
 //                // у сервера надо вызвать метод чтения сообщения
@@ -174,18 +184,14 @@ public class ClientGUI extends JFrame {
                 LocalDateTime currentDateTime = LocalDateTime.now();
                 String message = currentDateTime.toString();
                 if (btnLogin.isSelected()) {
-                    logTextArea.append("[" + message + "]" + " Соединение установлено" + "\n");
                     try {
-                        Socket socket = new Socket("localhost", 8080);
-                        OutputStream toSend = socket.getOutputStream();
-
-                        toSend.write(message.getBytes());
-                        toSend.flush();
-
-                        socket.close();
+                        socket = new Socket("localhost", 8080);
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
                     }
+                    logTextArea.append("[" + message + "]" + " Соединение установлено" + "\n");
+
+
                 } else {
                     logTextArea.append("[" + message + "]" + " Соединение разорвано" + "\n");
                 }
