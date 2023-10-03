@@ -5,7 +5,13 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.net.Socket;
 import java.time.LocalDateTime;
+
 
 public class ClientGUI extends JFrame {
     private static final int WIDTH = 600;
@@ -15,7 +21,11 @@ public class ClientGUI extends JFrame {
     JToggleButton btnLogin;
     JTextArea logTextArea;
 
-    public ClientGUI() throws HeadlessException {
+    ServerWindow serverWindow;
+    //IntermediateClass intermediate;
+    Socket socket;
+
+    public ClientGUI() throws HeadlessException, IOException {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //остановитть при закрытии
         setSize(WIDTH, HEIGHT);
         setLocationRelativeTo(null); //отцентровать
@@ -24,11 +34,11 @@ public class ClientGUI extends JFrame {
 
         btnLogin = new JToggleButton("Подключить");
         btnToSend = new JButton("Отправить");
-
         logTextArea = new JTextArea();
         logTextArea.setEditable(false);
 
 
+        ServerWindow serverWindow;
 
         add(createALoginPanel(), BorderLayout.NORTH);
         add(logTextArea);
@@ -40,6 +50,7 @@ public class ClientGUI extends JFrame {
     private Component sendingMessages() {
         JPanel entryPanel = new JPanel(new GridLayout(0, 2));
         JTextArea textArea = new JTextArea();
+
 //        textArea.setLineWrap(true); //перенос строк
 //        textArea.setWrapStyleWord(true); //перенос слов
         JScrollPane jScrollPane = new JScrollPane(textArea); //скролинг
@@ -51,6 +62,10 @@ public class ClientGUI extends JFrame {
                 String message = textArea.getText();
                 logTextArea.append(message + "\n");
                 textArea.setText("");
+
+//                intermediate = new IntermediateClass(message);
+//                // у сервера надо вызвать метод чтения сообщения
+//                ServerWindow.readingMessage();
             }
         });
 
@@ -142,6 +157,7 @@ public class ClientGUI extends JFrame {
             public void stateChanged(ChangeEvent e) {
                 if (btnLogin.isSelected()) {
                     btnLogin.setText("Отключить");
+
                 } else {
                     btnLogin.setText("Подключить");
                 }
@@ -157,10 +173,21 @@ public class ClientGUI extends JFrame {
 
                 LocalDateTime currentDateTime = LocalDateTime.now();
                 String message = currentDateTime.toString();
-                if(btnLogin.isSelected()){
-                    logTextArea.append("["+ message + "]" + " Соединение установлено" + "\n");
+                if (btnLogin.isSelected()) {
+                    logTextArea.append("[" + message + "]" + " Соединение установлено" + "\n");
+                    try {
+                        Socket socket = new Socket("localhost", 8080);
+                        OutputStream toSend = socket.getOutputStream();
+
+                        toSend.write(message.getBytes());
+                        toSend.flush();
+
+                        socket.close();
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
                 } else {
-                    logTextArea.append("["+ message + "]" + " Соединение разорвано" + "\n");
+                    logTextArea.append("[" + message + "]" + " Соединение разорвано" + "\n");
                 }
 
             }
