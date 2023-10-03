@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 
 
@@ -56,24 +57,7 @@ public class ServerWindow extends JFrame {
                 String message = currentDateTime.toString();
                 if (btnStart.isSelected()) {
                     textArea.append("[" + message + "]" + " Сервер включен" + "\n");
-                    try {
-                        Socket accept = serverSocket.accept();
-                        InputStream inputStream = accept.getInputStream();
-
-                        BufferedReader bufferedReader =
-                                new BufferedReader(
-                                        new InputStreamReader(inputStream, "utf8"
-                                        )
-                                );
-                        String readLine =
-                                bufferedReader.readLine();
-
-                        textArea. append(readLine);
-
-                        accept.close();
-                    } catch (IOException ex) {
-                        throw new RuntimeException(ex);
-                    }
+                    readingMessage();
                 } else {
                     textArea.append("[" + message + "]" + " Сервер выключен" + "\n");
                 }
@@ -97,8 +81,27 @@ public class ServerWindow extends JFrame {
         setVisible(true);
     }
 
-//    void readingMessage(){
+    void readingMessage(){
+        try {
+            ServerSocket serverSocket = new ServerSocket(8080);
+            Socket accept = serverSocket.accept();
+            InputStream inputStream = accept.getInputStream();
+
+            BufferedReader bufferedReader =
+                    new BufferedReader(
+                            new InputStreamReader(inputStream, StandardCharsets.UTF_8
+                            )
+                    );
+            String readLine =
+                    bufferedReader.readLine();
+
+            textArea. append(readLine);
+
+            accept.close();
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
 //        intermediate = new IntermediateClass();
 //        textArea.append(intermediate.getMessage() + "\n");
-//    }
+    }
 }
